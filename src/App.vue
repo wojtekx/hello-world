@@ -6,6 +6,7 @@
 
 <script>
 import Header from './components/Header.vue'
+import bootstrap from './assets/bootstrap.min.css'
 export default {
   name: 'app',
   components: {
