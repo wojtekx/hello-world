@@ -1,9 +1,8 @@
 <template>
      <div id="app">
         <h2>Pogoda:</h2>
-        <div id="weather"></div>
         <select v-model="city">
-            <option v-for="state in states" v-bind:key="state.id" :value="state.name">{{ state.name }}</option>
+            <option v-for="state in states" :key="state.id" :value="state.name">{{ state.name }}</option>
         </select>
         <button v-on:click="getData()">Szukaj</button>
         
@@ -17,7 +16,7 @@ name: 'Header',
  
   data() {
                 return {
-                   city: states[0].id,
+                   city: states.id,
                    API: "f3c08ceff7f970ccc92f3aab10216c6b",
                    states: states
                 };
