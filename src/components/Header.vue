@@ -37,6 +37,7 @@
 
 <script>
 import states from "./list.json";
+import Login from "./Login.vue"
 export default {
 name: 'Header',
 
@@ -114,7 +115,7 @@ name: 'Header',
     justify-content: space-between;
     flex-wrap: wrap;
     top: 100px;
-    right: 50px;
+    right: 100px;
 }
 .moreInfo h5{
     position: absolute;
@@ -138,6 +139,8 @@ ul{
     list-style: none;
     padding: 0;
     margin-top: 30px;
+    max-height: 600px;
+    overflow: hidden;
 }
 li{
     margin: 0;
