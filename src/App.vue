@@ -1,18 +1,22 @@
 <template>
   <div id="app">
-    <Header/>
+    <!-- <Login /> -->
+    <Header />
   </div>
 </template>
-
+ 
 <script>
-import Header from './components/Header.vue'
-import bootstrap from './assets/bootstrap.min.css'
+import Header from './components/Header.vue';
+import bootstrap from './assets/bootstrap.min.css';
+import Login from './components/Login.vue';
 export default {
   name: 'app',
   components: {
-    Header
+    Header,
+    Login
   }
 }
+
 </script>
 
 <style>
