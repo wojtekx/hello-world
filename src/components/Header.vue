@@ -1,6 +1,8 @@
 <template>
     <div class="app">
+        {{checkUsers()}}
         <div class="weather">
+            <a class="href" href="/Login"><button class="btn btn-success">Wyloguj się</button></a>
             <h4>Wybierz miasta:</h4>
              <select class=" custom-select"  v-on:change="addCity()">
                 <option  v-for="state in states" :key="state.id" :value="state.id">{{ state.name }}</option>
@@ -8,7 +10,7 @@
             <div class="result">
                 <div class="column">
                     <p v-for="name in cityName" v-bind:key="name">
-                        <button class="btn btn-primary" v-on:click="more(name)">More/Less</button> Miasto: {{name}}
+                        <button class="btn btn-primary" v-on:click="more(name)">Więcej/Mniej</button> Miasto: {{name}}
                     </p>
                     <div class="moreInfo none">
                         <h5>Prognoza godzinowa dla miasta: {{name}}</h5>
@@ -102,8 +104,18 @@ name: 'Header',
            this.moreHumidity.push(el.main.humidity)
            this.moreDate.push(el.dt_txt)
         }))
+    },
+    checkUsers(){
+      const user = localStorage.getItem('user');
+    if(user){
+        $('#currentUser').html('Witaj: '+user+'!')
     }
+    else{
+        window.location.href = '/Login';
+    }
+  }
   },
+  
 };
 
 </script>
@@ -115,7 +127,7 @@ name: 'Header',
     justify-content: space-between;
     flex-wrap: wrap;
     top: 100px;
-    right: 100px;
+    right: 50px;
 }
 .moreInfo h5{
     position: absolute;
@@ -156,6 +168,10 @@ p {
     margin: 20px;
     width: auto;
     display: flex;
+}
+a.href{
+    display: flex;
+    margin-left: 20px;
 }
 </style>
 
