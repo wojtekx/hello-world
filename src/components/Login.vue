@@ -1,5 +1,7 @@
 <template>
+
     <form id="form" v-on:submit.prevent="checkUsers()">
+        {{start()}}
             <div class="form-group">
                 <label for="inputLog">Login</label>
                 <input type="text" class="form-control" id="inputLog" placeholder="Enter login">
@@ -50,7 +52,7 @@ methods:{
         if (findUser) {
             if (user.password === findUser.password) {
                 localStorage.setItem('user', user.login);
-                window.location.href = './Header.vue';
+                window.location.href = '#/Header';
             }
             else {
                 $('#wrong').html('Niepoprawne haslo')
