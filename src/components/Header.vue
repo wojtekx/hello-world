@@ -10,19 +10,19 @@
             <div class="result">
                 <div class="column">
                     <p v-for="name in cityName" v-bind:key="name">
-                        <button class="btn btn-primary" v-on:click="more(name)">Więcej/Mniej</button> Miasto: {{name}}
+                        <button class="btn btn-primary" v-on:click="more(name)">Więcej</button>  {{name}}
                     </p>
                     <div class="moreInfo none">
                         <h5>Prognoza godzinowa dla miasta: {{name}}</h5>
                         
                         <ul class="list-group">
-                            <li class="list-group-item" v-for="date in moreDate"  >{{date}}</li>
+                            <li class="list-group-item" v-for="date in moreDate" :key="date" >{{date}}</li>
                         </ul>
                         <ul class="list-group">
                             <li class="list-group-item" v-for="temp in moreTemp"  :key="temp.dt">{{Math.round(temp)}}°C</li>
                         </ul>
                         <ul class="list-group">
-                            <li class="list-group-item" v-for="humidity in moreHumidity"  >{{humidity}}%</li>
+                            <li class="list-group-item" v-for="humidity in moreHumidity" :key="humidity*Math.random()" >{{humidity}}%</li>
                         </ul>
                     </div>
                 </div>
@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import states from "./list.json";
+import states from "./city.list.json";
 import Login from "./Login.vue"
 export default {
 name: 'Header',
@@ -56,10 +56,12 @@ name: 'Header',
       moreDate: [],
       searchCity: [] ,
       index: "",
-      name: ""
+      name: "",
+      key: 1
     }
   },
   methods: {
+      // Pobieranie danych API dla kazdego miasta //
     getData() {
         clearInterval(this.index)
          this.cityName = [];
@@ -76,20 +78,24 @@ name: 'Header',
                 this.cityName.push(e.name);
                 this.cityTemp.push(Math.round(e.main.temp));
                 this.cityHumidity.push(Math.round(e.main.humidity));
+                console.log(data);
+                
             })
         });
        this.index = setInterval(this.getData, 60000)
     },
-    
+    // Dodawanie miast do listy obserwowanych //
     addCity(){
         let x = document.querySelector('option:checked').value 
         document.querySelector('option:checked').classList.add('none')
         this.searchCity += "," +x;
         this.getData()
     },
+
+    // Pobranie i wyświetlanie prognozy godzinowej //
     more(name){
         this.name = name;
-        document.querySelector('.moreInfo').classList.toggle("none")
+        document.querySelector('.moreInfo').classList.remove("none")
         this.moreTemp = []
         this.moreHumidity =[]
         this.moreDate = []
@@ -105,6 +111,8 @@ name: 'Header',
            this.moreDate.push(el.dt_txt)
         }))
     },
+
+    // Sprawdzenie czy użytkownik jest zalogowany // 
     checkUsers(){
       const user = localStorage.getItem('user');
     if(user){
@@ -150,7 +158,7 @@ ul{
     flex-direction: column;
     list-style: none;
     padding: 0;
-    margin-top: 30px;
+    margin-top: 50px;
     max-height: 600px;
     overflow: hidden;
 }
@@ -163,6 +171,10 @@ p {
     height: 30px;
     line-height: 30px;
     text-align: left;
+    color: white;
+}
+p > button{
+margin-right: 5px;
 }
 .custom-select, h4{
     margin: 20px;
@@ -172,6 +184,9 @@ p {
 a.href{
     display: flex;
     margin-left: 20px;
+}
+h4,h5{
+    color: white;
 }
 </style>
 
