@@ -1,18 +1,19 @@
 <template>
-
-    <form id="form" v-on:submit.prevent="checkUsers()">
-        {{start()}}
-            <div class="form-group">
-                <label for="inputLog">Login</label>
-                <input type="text" class="form-control" id="inputLog" placeholder="Enter login">
-            </div>
-            <div class="form-group">
-                <label for="inputPass">Password</label>
-                <input type="password" class="form-control" id="inputPass" placeholder="Password">
-            </div>
-            <button type="submit" class="btn">Submit</button>
-            <span id="wrong" style="color:red; font-size: 13px;"></span>
+    <div class="container col-3">
+        <form id="form" v-on:submit.prevent="checkUsers()">
+            {{start()}}
+                <div class="form-group">
+                    <label for="inputLog">Login</label>
+                    <input type="text" class="form-control col-2" id="inputLog" placeholder="Enter login">
+                </div>
+                <div class="form-group">
+                    <label for="inputPass">Password</label>
+                    <input type="password" class="form-control col-2" id="inputPass" placeholder="Password">
+                </div>
+                <button type="submit" class="btn btn-secondary">Submit</button><br>
+                <span id="wrong" ></span>
         </form>
+    </div>    
 </template>
 
 <script>
@@ -36,14 +37,13 @@ data(){
     
 },
 methods:{
-    
+    // Wylogowanie użytkownika //
     start(){
         localStorage.removeItem('user');
     },
 
-    
+    // walidacja formularza //
     checkUsers() {
-        
         const user = {
             login: $('#inputLog').val(),
             password: $('#inputPass').val()
@@ -57,7 +57,6 @@ methods:{
             else {
                 $('#wrong').html('Niepoprawne haslo')
             }
-
         }
         else {
             $('#wrong').html('Niepoprawny login lub haslo')
@@ -68,6 +67,31 @@ methods:{
 }
 </script>
 
-<style>
+<style scoped>
+
+#wrong{
+    color:red; 
+    font-size: 13px;
+    font-weight: 500;
+}
+.btn-secondary{
+     margin-bottom: 10px;
+}
+.form-group .col-2{
+    margin: 0 auto;
+    min-width: 200px;
+}
+.form-group label{
+    color: white;
+}
+form{
+    margin-top: 50px;
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 50px 0;
+    background-image: url('../assets/1.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
 
 </style>
