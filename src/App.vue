@@ -1,7 +1,8 @@
 <template>
   <div id="app">
     <!-- <Login /> -->
-    <Header />
+    <!-- <Header /> -->
+    <router-view/>
   </div>
 </template>
  
