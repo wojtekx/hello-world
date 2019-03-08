@@ -1,5 +1,5 @@
 <template>
-    <div class="container col-3">
+    <div class="container col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
         <form id="form" v-on:submit.prevent="checkUsers()">
             {{start()}}
                 <div class="form-group">
@@ -92,6 +92,9 @@ form{
     background-image: url('../assets/1.jpg');
     background-repeat: no-repeat;
     background-size: cover;
+}
+.container{
+    margin-top: 20%;
 }
 
 </style>
