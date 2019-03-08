@@ -4,17 +4,18 @@
         <div class="weather">
             <a class="href"><button v-on:click="Logout()" class="btn btn-success">Wyloguj się</button></a>
             <h4>Wybierz miasta:</h4>
-             <select class=" custom-select"  v-on:change="addCity()">
+             <select class="col-10 custom-select"  v-on:change="addCity()">
                 <option  v-for="state in states" :key="state.id" :value="state.id">{{ state.name }}</option>
             </select>
             <div class="result">
                 <div class="column">
                     <p v-for="name in cityName" v-bind:key="name">
-                        <button class="btn btn-primary"  v-on:click="more(name)">Więcej</button>  {{name}}
+                        <button class="btn btn-primary"  v-on:click="more(name)">Więcej</button>
+                        <span>{{name}}</span>  
                     </p>
                     <div class="moreInfo none">
                         <button class="btn btn-danger" v-on:click="close()">powrót</button>
-                        <div class="container">
+                        <div class="container col-10">
                             <h5>Prognoza godzinowa dla miasta: {{name}}</h5>
                         
                         <ul class="list-group">
@@ -238,7 +239,6 @@ h4,h5{
 }
 .container{
     display: flex;
-    
 }
 button.btn-danger{
     margin: 0 auto 15px;
@@ -253,6 +253,46 @@ img{
 li.more-title {
     color: snow;
     text-shadow: 0 0 6px;
+}
+
+@media(min-width: 320px) and (max-width: 768px){
+    .column{
+        display: none
+    }
+    .column:first-child{
+        display: block;
+    }
+    ul{
+        width: auto;
+        font-size: 11px;
+        padding: 0;
+        line-height: 100%;
+    }
+    li.more-title{
+        font-size: 9px;
+        padding: 0;
+    }
+    li.list-group-item{
+        padding: 2px 7px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .moreInfo h5{
+        font-size: 14px;
+    }
+    .weather {
+    margin-top: 10%;
+    }
+}
+@media(min-width: 769px) and (max-width:1024px ){
+    ul{
+        width: 24%;
+    }
+    ul:nth-child(2) li.list-group-item {
+    font-size: 14px;
+    padding: 0;
+    }
 }
 </style>
 
