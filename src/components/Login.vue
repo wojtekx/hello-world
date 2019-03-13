@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import jquery from './jquery-3.3.1.js'
+import '@/others/jquery-3.3.1.js'
 export default {
 name: 'Login',
 data(){
