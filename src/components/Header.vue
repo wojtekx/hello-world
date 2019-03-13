@@ -4,61 +4,61 @@
         <div class="weather">
             <a class="href"><button v-on:click="Logout()" class="btn btn-success">Wyloguj się</button></a>
             <h4>Wybierz miasta:</h4>
-             <select class="col-10 custom-select"  v-on:change="addCity()">
-                <option  v-for="state in states" :key="state.id" :value="state.id">{{ state.name }}</option>
+             <select id="mySelect" class="col-10 custom-select"  >
+                <option  v-for="state in states" :key="state.id" :value="state.id" :name="state.name">{{ state.name }}</option>
             </select>
+            <button class="btn btn-primary addBtn" v-on:click="addCity()">Dodaj</button>
             <div class="result">
-                <div class="column">
-                    <p v-for="name in cityName" v-bind:key="name">
-                        <button class="btn btn-primary"  v-on:click="more(name)">Więcej</button>
-                        <span>{{name}}</span>  
-                    </p>
+                <div class="column" v-for="item in city" :key="item.id">
+                    <p>Miasto: {{item.cityName}}</p>
+                    <p>Temperatura: {{item.cityTemp}}°C</p>
+                    <p>Wilgotność: {{item.cityHumidity}}%</p>
+                    <div>
+                        <button class="btn btn-primary"  v-on:click="more(item.cityName)">Więcej</button>
+                        <button class="btn btn-warning" v-on:click="deleteCity(item.id, searchCity, item.cityName)">Usuń</button>
+                    </div>
+                </div>
+                    
                     <div class="moreInfo none">
                         <button class="btn btn-danger" v-on:click="close()">powrót</button>
                         <div class="container col-10">
                             <h5>Prognoza godzinowa dla miasta: {{name}}</h5>
                         
-                        <ul class="list-group">
-                            <li class="more-title">Aktualna Data:</li>
-                            <li class="list-group-item" v-for="date in moreDate" :key="date" >{{date}}</li>
-                        </ul>
-                        <ul class="list-group">
-                            <li class="more-title">Temperatura:</li>
-                            <li class="list-group-item" v-for="temp in moreTemp"  :key="temp.dt">{{Math.round(temp)}}°C</li>
-                        </ul>
-                        <ul class="list-group">
-                            <li class="more-title">Ikona:</li>
-                            <li class="list-group-item" v-for="icon in moreIcon" :key="icon*Math.random()" ><img v-bind:src="'https://openweathermap.org/img/w/'+icon+'.png'" /></li>
-                        </ul>
-                        <ul class="list-group">
-                            <li class="more-title">Wilgotność:</li>
-                            <li class="list-group-item" v-for="humidity in moreHumidity" :key="humidity*Math.random()" >{{humidity}}%</li>
-                        </ul>
-                        <ul class="list-group">
-                            <li class="more-title">Ciśnienie:</li>
-                            <li class="list-group-item" v-for="pressure in morePressure" :key="pressure*Math.random()" >{{Math.round(pressure)}}hpa</li>
-                        </ul>
-                        <ul class="list-group">
-                            <li class="more-title">Prędkość wiatru:</li>
-                            <li class="list-group-item" v-for="wind in moreWind" :key="wind*Math.random()" >{{Math.round(wind)}}m/s</li>
-                        </ul>
+                            <ul class="list-group">
+                                <li class="more-title">Aktualna Data:</li>
+                                <li class="list-group-item" v-for="date in moreDate" :key="date" >{{date}}</li>
+                            </ul>
+                            <ul class="list-group">
+                                <li class="more-title">Temperatura:</li>
+                                <li class="list-group-item" v-for="temp in moreTemp"  :key="temp.dt">{{Math.round(temp)}}°C</li>
+                            </ul>
+                            <ul class="list-group">
+                                <li class="more-title">Ikona:</li>
+                                <li class="list-group-item" v-for="icon in moreIcon" :key="icon*Math.random()" ><img v-bind:src="'https://openweathermap.org/img/w/'+icon+'.png'" /></li>
+                            </ul>
+                            <ul class="list-group">
+                                <li class="more-title">Wilgotność:</li>
+                                <li class="list-group-item" v-for="humidity in moreHumidity" :key="humidity*Math.random()" >{{humidity}}%</li>
+                            </ul>
+                            <ul class="list-group">
+                                <li class="more-title">Ciśnienie:</li>
+                                <li class="list-group-item" v-for="pressure in morePressure" :key="pressure*Math.random()" >{{Math.round(pressure)}}hpa</li>
+                            </ul>
+                            <ul class="list-group">
+                                <li class="more-title">Prędkość wiatru:</li>
+                                <li class="list-group-item" v-for="wind in moreWind" :key="wind*Math.random()" >{{Math.round(wind)}}m/s</li>
+                            </ul>
                         </div>
                     </div>
-                </div>
-                <div class="column">
-                    <p v-for="temp in cityTemp" v-bind:key="Math.random()*temp">Temperatura: {{temp}}°C </p>
-                </div>
-                <div class="column">
-                    <p v-for="humidity in cityHumidity" v-bind:key="Math.random()*humidity">Wilgotność: {{humidity}}%</p>
-                </div>
             </div>
         </div>
     </div>
 </template>
-
 <script>
-import states from "./city.list.json";
-import Login from "./Login.vue"
+import states from "@/others/city.list.json";
+import "@/others/jquery-3.3.1.js";
+import "@/others/select2.min.js";
+import "@/others/select2.min.css";
 import { log } from 'util';
 export default {
 name: 'Header',
@@ -69,9 +69,6 @@ name: 'Header',
       city: [],
       API: "f3c08ceff7f970ccc92f3aab10216c6b",
       states: states,
-      cityTemp: [],
-      cityHumidity: [],
-      cityName: [],
       moreTemp: [],
       moreHumidity: [],
       moreDate: [],
@@ -81,43 +78,55 @@ name: 'Header',
       searchCity: [] ,
       index: "",
       name: "",
-      key: 1
+      key: [],
+      addedCity:"",
     }
   },
   methods: {
       // Pobieranie danych API dla kazdego miasta //
     getData() {
         clearInterval(this.index)
-         this.cityName = [];
-         this.cityTemp = [];
-         this.cityHumidity = [];
+         this.city = [];
         fetch(
-            `http://api.openweathermap.org/data/2.5/group?id=0${
-            this.searchCity
+            `http://api.openweathermap.org/data/2.5/group?id=${
+            this.searchCity.join(",")
             }&units=metric&appid=${this.API}`
         )
         .then(response => response.json())
         .then(data => {
             data.list.map(e=> {
-                this.cityName.push(e.name);
-                this.cityTemp.push(Math.round(e.main.temp));
-                this.cityHumidity.push(Math.round(e.main.humidity));
+                this.city.push({
+                    id: e.id,
+                    cityName: e.name,
+                    cityTemp: Math.round(e.main.temp),
+                    cityHumidity: Math.round(e.main.humidity),
+                })
             })
         });
-       this.index = setInterval(this.getData, 60000)
+    //    this.index = setInterval(this.getData, 60000)
     },
     // Dodawanie miast do listy obserwowanych //
     addCity(){
-        let x = document.querySelector('option:checked').value 
-        document.querySelector('option:checked').classList.add('none')
-        this.searchCity += "," +x;
-        this.getData()
+        let addedCity = document.querySelector('option:checked');
+        addedCity.remove();
+        this.searchCity.push(addedCity.value);
+        this.getData();
+    },
+
+    // Usuwanie miast z listy obserwowanych //
+    deleteCity(id, searchCity, name){
+        this.searchCity = searchCity.filter(el => el != id)
+        const x = document.createElement('option')
+        x.setAttribute("value", `${id}`)
+        x.textContent = name
+        document.querySelector('#mySelect').append(x)
+        this.getData();
     },
 
     // Pobranie i wyświetlanie prognozy godzinowej //
     more(name){
         this.name = name;
-        document.querySelector('.moreInfo').classList.remove("none")
+        document.querySelector('.moreInfo').classList.remove("none");
         this.moreTemp = []
         this.moreHumidity =[]
         this.moreDate = []
@@ -145,7 +154,7 @@ name: 'Header',
     checkUsers(){
       const user = localStorage.getItem('user');
         if(user){
-            $('#currentUser').html('Witaj: '+user+'!')
+            // $('#currentUser').html('Witaj: '+user+'!')
         }
         else{
             window.location.href = '/index.html';
@@ -158,14 +167,19 @@ name: 'Header',
   },
   close(){
       document.querySelector('.moreInfo').classList.add("none")
-  }
   },
-  
-  
+  },
+
+  mounted(){
+    $('#mySelect').select2({
+    selectOnClose: true
+    });
+  },
+
 };
 
-</script>
-
+  
+  </script>
 <style scoped>
 .moreInfo {
     position: absolute;
@@ -195,8 +209,12 @@ name: 'Header',
     align-items: center;
 }
 .column{
-    margin: 0 20px;
+    margin: 20px;
     font-size: 20px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid black;
+    padding: 15px;
 }
 .none{
     display: none;
@@ -207,7 +225,6 @@ ul{
     list-style: none;
     padding: 0;
     margin-top: 50px;
-  
 }
 li{
     margin: 0;
@@ -254,6 +271,15 @@ li.more-title {
     color: snow;
     text-shadow: 0 0 6px;
 }
+.btn-primary, .btn-warning {
+    margin-right: 10px;
+}
+.addBtn{
+    font-size: 13px;
+    padding: 4px;
+    margin-left: 5px;
+}
+
 
 @media(min-width: 320px) and (max-width: 768px){
     .column{
