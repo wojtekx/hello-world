@@ -1,7 +1,5 @@
 <template>
   <div id="app">
-    <!-- <Login /> -->
-    <!-- <Header /> -->
     <router-view/>
   </div>
 </template>
@@ -10,11 +8,13 @@
 import Header from './components/Header.vue';
 import bootstrap from './assets/bootstrap.min.css';
 import Login from './components/Login.vue';
+import SignUp from './components/SignUp.vue';
 export default {
   name: 'app',
   components: {
     Header,
     Login,
+    SignUp,
   }
 }
 
