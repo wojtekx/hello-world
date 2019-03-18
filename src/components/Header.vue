@@ -84,6 +84,7 @@ name: 'Header',
     }
   },
   methods: {
+      
       // Pobieranie danych API dla kazdego miasta //
     getData() {
         clearInterval(this.index)
