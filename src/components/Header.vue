@@ -1,8 +1,8 @@
 <template>
     <div class="app">
-        {{checkUsers()}}
+        
         <div class="weather">
-            <a class="href"><button v-on:click="Logout()" class="btn btn-success">Wyloguj się</button></a>
+            <button @click="logout" class="btn btn-success">Wyloguj się</button>
             <h4>Wybierz miasta:</h4>
              <select id="mySelect" class="col-10 custom-select"  >
                 <option  v-for="state in states" :key="state.id" :value="state.id" :name="state.name">{{ state.name }}</option>
@@ -26,27 +26,27 @@
                         
                             <ul class="list-group">
                                 <li class="more-title">Aktualna Data:</li>
-                                <li class="list-group-item" v-for="date in moreDate" :key="date" >{{date}}</li>
+                                <li class="list-group-item" v-for="date in moreDate"  >{{date}}</li>
                             </ul>
                             <ul class="list-group">
                                 <li class="more-title">Temperatura:</li>
-                                <li class="list-group-item" v-for="temp in moreTemp"  :key="temp.dt">{{Math.round(temp)}}°C</li>
+                                <li class="list-group-item" v-for="temp in moreTemp"  >{{Math.round(temp)}}°C</li>
                             </ul>
                             <ul class="list-group">
                                 <li class="more-title">Ikona:</li>
-                                <li class="list-group-item" v-for="icon in moreIcon" :key="icon*Math.random()" ><img v-bind:src="'https://openweathermap.org/img/w/'+icon+'.png'" /></li>
+                                <li class="list-group-item" v-for="icon in moreIcon"  ><img v-bind:src="'https://openweathermap.org/img/w/'+icon+'.png'" /></li>
                             </ul>
                             <ul class="list-group">
                                 <li class="more-title">Wilgotność:</li>
-                                <li class="list-group-item" v-for="humidity in moreHumidity" :key="humidity*Math.random()" >{{humidity}}%</li>
+                                <li class="list-group-item" v-for="humidity in moreHumidity"  >{{humidity}}%</li>
                             </ul>
                             <ul class="list-group">
                                 <li class="more-title">Ciśnienie:</li>
-                                <li class="list-group-item" v-for="pressure in morePressure" :key="pressure*Math.random()" >{{Math.round(pressure)}}hpa</li>
+                                <li class="list-group-item" v-for="pressure in morePressure"  >{{Math.round(pressure)}}hpa</li>
                             </ul>
                             <ul class="list-group">
                                 <li class="more-title">Prędkość wiatru:</li>
-                                <li class="list-group-item" v-for="wind in moreWind" :key="wind*Math.random()" >{{Math.round(wind)}}m/s</li>
+                                <li class="list-group-item" v-for="wind in moreWind" >{{Math.round(wind)}}m/s</li>
                             </ul>
                         </div>
                     </div>
@@ -55,17 +55,18 @@
     </div>
 </template>
 <script>
+import firebase from 'firebase';
 import states from "@/others/city.list.json";
 import "@/others/jquery-3.3.1.js";
 import "@/others/select2.min.js";
 import "@/others/select2.min.css";
-import { log } from 'util';
+import base from '@/main.js';
+
 export default {
 name: 'Header',
 
   data() {
     return {
-      showModal: false,
       city: [],
       API: "f3c08ceff7f970ccc92f3aab10216c6b",
       states: states,
@@ -78,18 +79,22 @@ name: 'Header',
       searchCity: [] ,
       index: "",
       name: "",
-      key: [],
       addedCity:"",
+      loadedCity:""
     }
   },
   methods: {
       // Pobieranie danych API dla kazdego miasta //
     getData() {
         clearInterval(this.index)
-         this.city = [];
+        
+        
+        this.loadedCity = localStorage.getItem("cityId");
+        
+        this.city = [];
         fetch(
             `http://api.openweathermap.org/data/2.5/group?id=${
-            this.searchCity.join(",")
+            this.loadedCity
             }&units=metric&appid=${this.API}`
         )
         .then(response => response.json())
@@ -107,20 +112,39 @@ name: 'Header',
     },
     // Dodawanie miast do listy obserwowanych //
     addCity(){
+        let path = localStorage.getItem("name");
+        let users = base.database().ref(`users/${path}`);
+
         let addedCity = document.querySelector('option:checked');
-        addedCity.remove();
+        
+        if(!this.searchCity){this.searchCity = ["0"]}
+       
         this.searchCity.push(addedCity.value);
+         
+        addedCity.remove();
+        users.set(this.searchCity);
+        
+        localStorage.setItem("cityId", this.searchCity)
+        
         this.getData();
+
     },
 
     // Usuwanie miast z listy obserwowanych //
     deleteCity(id, searchCity, name){
+        let path = localStorage.getItem("name");
+        let users = base.database().ref(`users/${path}`);
         this.searchCity = searchCity.filter(el => el != id)
         const x = document.createElement('option')
         x.setAttribute("value", `${id}`)
         x.textContent = name
         document.querySelector('#mySelect').append(x)
+       
+        users.set(this.searchCity);
+        localStorage.setItem("cityId", this.searchCity)
+       
         this.getData();
+       
     },
 
     // Pobranie i wyświetlanie prognozy godzinowej //
@@ -149,36 +173,42 @@ name: 'Header',
            
         }))
     },
-
-    // Sprawdzenie czy użytkownik jest zalogowany // 
-    checkUsers(){
-      const user = localStorage.getItem('user');
-        if(user){
-            // $('#currentUser').html('Witaj: '+user+'!')
-        }
-        else{
-            window.location.href = '/index.html';
-        }
-  },
+    
     // Wylogowanie //
-    Logout(){
-        localStorage.removeItem('user');
-        window.location.href = '/index.html';
-  },
+    logout:function(){
+        firebase.auth().signOut().then(()=>{
+            this.$router.replace('login')
+            localStorage.removeItem("name")
+            localStorage.removeItem("cityId")
+        })
+    },
+
   close(){
       document.querySelector('.moreInfo').classList.add("none")
   },
+  
   },
 
   mounted(){
     $('#mySelect').select2({
     selectOnClose: true
     });
+   
+    let path = localStorage.getItem("name");
+    let users = base.database().ref(`users/${path}`);
+    users.on("value", data =>  localStorage.setItem("cityId", data.val())  );
+       
+    this.getData();
   },
-
-};
-
+ 
+  updated(){
+    let path = localStorage.getItem("name");
+    let users = base.database().ref(`users/${path}`);
+    users.on("value", data =>  this.searchCity = data.val());
+  },
+ 
   
+};
   </script>
 <style scoped>
 .moreInfo {
@@ -207,6 +237,7 @@ name: 'Header',
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    flex-wrap: wrap;
 }
 .column{
     margin: 20px;
@@ -253,6 +284,7 @@ a.href{
 h4,h5{
     color: white;
     display: flex;
+    justify-content: center;
 }
 .container{
     display: flex;
