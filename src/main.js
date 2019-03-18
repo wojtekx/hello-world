@@ -2,6 +2,7 @@ import firebase from 'firebase';
 import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
+import Vuex from 'vuex'
 
 Vue.config.productionTip = false;
 
@@ -9,12 +10,12 @@ let app = "";
 
 let base = firebase.initializeApp(
   {
-    apiKey: "AIzaSyC6FzZ0j5N8vGuoaAvpZK3matpGpjDXVwg",
-    authDomain: "weatherapp-ccdc0.firebaseapp.com",
-    databaseURL: "https://weatherapp-ccdc0.firebaseio.com",
-    projectId: "weatherapp-ccdc0",
-    storageBucket: "weatherapp-ccdc0.appspot.com",
-    messagingSenderId: "677299154605"
+    apiKey: "xxx",
+    authDomain: "xx",
+    databaseURL: "xx",
+    projectId: "xx",
+    storageBucket: "xxx",
+    messagingSenderId: "xx"
   }
 );
 
@@ -28,8 +29,21 @@ firebase.auth().onAuthStateChanged(() => {
   }
 });
 
+Vue.use(Vuex)
 
+const store = new Vuex.Store({
+  state: {
+    count: 0
+  },
+  mutations: {
+    increment (state) {
+      state.count++
+    }
+  }
+})
+store.commit('increment')
 
+console.log(store.state.count)
 
 
 
